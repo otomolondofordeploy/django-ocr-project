@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class OcrappConfig(AppConfig):
+class OcrAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'ocrapp'
+    name = 'ocr_app'

@@ -1,32 +1,35 @@
-# Sử dụng Python 3.11 slim để tránh lỗi python-magic
 FROM python:3.11-slim
 
-# Cài system dependencies cần thiết
+# Install system dependencies for OCR
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
+    tesseract-ocr-vie \
     ghostscript \
-    libmagic1 \
-    build-essential \
+    unpaper \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements trước (tăng cache layer)
+# Copy requirements
 COPY requirements.txt .
 
-# Upgrade pip & install Python packages
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy toàn bộ project
+# Copy project
 COPY . .
+
+# Create directories
+RUN mkdir -p media static output
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Expose port (Render default: 10000)
-EXPOSE 10000
+# Expose port
+EXPOSE 8000
 
-# Start server
-CMD ["gunicorn", "ocrsite.wsgi", "--bind", "0.0.0.0:10000"]
+# Run gunicorn
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "2", "ocr_project.wsgi:application"]
