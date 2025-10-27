@@ -1,5 +1,5 @@
-ocrmypdf>=15.8.7
 Django>=4.2,<5.0
+ocrmypdf>=15.8.7
 requests>=2.31.0
 gunicorn>=21.2.0
 Pillow>=10.1.0
